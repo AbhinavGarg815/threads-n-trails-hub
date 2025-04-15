@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Search, User, Menu, X } from 'lucide-react';
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
     { name: "Women", path: "/products/women" },
@@ -14,6 +16,12 @@ const Navbar = () => {
     { name: "New Arrivals", path: "/products/new" },
     { name: "Sale", path: "/products/sale" },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle search logic here
+    console.log('Search query:', searchQuery);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-fashion-200">
@@ -45,11 +53,29 @@ const Navbar = () => {
             ))}
           </nav>
 
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="hidden md:flex items-center flex-1 max-w-md mx-4">
+            <div className="relative w-full">
+              <Input
+                type="search"
+                placeholder="Search products..."
+                className="w-full pr-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button 
+                type="submit"
+                variant="ghost" 
+                size="icon"
+                className="absolute right-0 top-0"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
+
           {/* User Actions */}
           <div className="flex items-center space-x-4">
-            <button className="hover:text-fashion-accent transition-colors" aria-label="Search">
-              <Search size={20} />
-            </button>
             <Link to="/account" className="hover:text-fashion-accent transition-colors" aria-label="Account">
               <User size={20} />
             </Link>
@@ -65,6 +91,16 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-white pt-16">
           <div className="container mx-auto px-4 py-8">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="mb-6">
+              <Input
+                type="search"
+                placeholder="Search products..."
+                className="w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
             <nav className="flex flex-col space-y-6">
               {categories.map((category) => (
                 <Link 
